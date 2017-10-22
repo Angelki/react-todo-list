@@ -1,15 +1,19 @@
-import {
-	connect
-} from 'react-redux';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import TodoList from '../Components/TodoList';
 
-import {
-	toggleTodo
-} from '../action';
+import {toggleTodo} from '../action';
+import getVisibleTodos from '../selector';
 
 // 我们将 store 中的数据作为 props 绑定到组件上
-const mapStateToProps = (state, ownProps) => ({
-	todos: state
+// const mapStateToProps = (state, ownProps) => ({
+// 	todos: state
+// });
+const mapStateToProps = (state, {match}) => ({
+    todos: getVisibleTodos(
+        state,
+        match.params.filter || "all"
+    )
 });
 
 
@@ -23,9 +27,15 @@ const mapDispatchToProps = (dispatch) => ({
 	}
 });
 
-const VisibleTodoList = connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(TodoList);
+// const VisibleTodoList = connect(
+// 	mapStateToProps,
+// 	mapDispatchToProps
+// )(TodoList);
+
+const VisibleTodoList = withRouter(connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TodoList));
+
 
 export default VisibleTodoList;
